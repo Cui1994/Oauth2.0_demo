@@ -1,8 +1,8 @@
-package com.cui.demo.domain.po;
+package com.cui.demo.port.adapter.persistence.tb;
 
 import java.util.Date;
 
-public class Resource {
+public class TbResource {
     private Long id;
 
     private String name;

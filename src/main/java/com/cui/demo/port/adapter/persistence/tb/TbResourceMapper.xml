@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cui.demo.dao.ResourceMapper">
-  <resultMap id="BaseResultMap" type="com.cui.demo.domain.po.Resource">
+<mapper namespace="com.cui.demo.port.adapter.persistence.tb.TbResourceMapper">
+  <resultMap id="BaseResultMap" type="com.cui.demo.port.adapter.persistence.tb.TbResource">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
@@ -21,13 +21,13 @@
     delete from resource
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.cui.demo.domain.po.Resource">
+  <insert id="insert" parameterType="com.cui.demo.port.adapter.persistence.tb.TbResource">
     insert into resource (id, name, created_at, 
       updated_at, is_deleted)
     values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{createdAt,jdbcType=TIMESTAMP}, 
       #{updatedAt,jdbcType=TIMESTAMP}, #{isDeleted,jdbcType=TINYINT})
   </insert>
-  <insert id="insertSelective" parameterType="com.cui.demo.domain.po.Resource">
+  <insert id="insertSelective" parameterType="com.cui.demo.port.adapter.persistence.tb.TbResource">
     insert into resource
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -64,7 +64,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.cui.demo.domain.po.Resource">
+  <update id="updateByPrimaryKeySelective" parameterType="com.cui.demo.port.adapter.persistence.tb.TbResource">
     update resource
     <set>
       <if test="name != null">
@@ -82,7 +82,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.cui.demo.domain.po.Resource">
+  <update id="updateByPrimaryKey" parameterType="com.cui.demo.port.adapter.persistence.tb.TbResource">
     update resource
     set name = #{name,jdbcType=VARCHAR},
       created_at = #{createdAt,jdbcType=TIMESTAMP},

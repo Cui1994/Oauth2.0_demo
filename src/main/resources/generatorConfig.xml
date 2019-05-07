@@ -24,23 +24,29 @@
     </jdbcConnection>
 
     <!-- 数据表对应的model层  -->
-    <javaModelGenerator targetPackage="com.cui.demo.domain.po" targetProject="src/main/java">
+    <javaModelGenerator targetPackage="com.cui.demo.port.adapter.persistence" targetProject="src/main/java">
       <property name="enableSubPackages" value="true" />
       <property name="trimStrings" value="true" />
     </javaModelGenerator>
 
     <!-- sql mapper 映射配置文件 -->
-    <sqlMapGenerator targetPackage="mapper"  targetProject="src/main/resources">
+    <sqlMapGenerator targetPackage="com.cui.demo.port.adapter.persistence"  targetProject="src/main/java">
       <property name="enableSubPackages" value="true" />
     </sqlMapGenerator>
 
     <!-- mybatis3中的mapper接口 -->
-    <javaClientGenerator type="XMLMAPPER" targetPackage="com.cui.demo.dao"  targetProject="src/main/java">
+    <javaClientGenerator type="XMLMAPPER" targetPackage="com.cui.demo.port.adapter.persistence"  targetProject="src/main/java">
       <property name="enableSubPackages" value="true" />
     </javaClientGenerator>
 
     <!-- 数据表进行生成操作 schema:相当于库名; tableName:表名; domainObjectName:对应的DO -->
-    <table schema="test" tableName="resource" domainObjectName="Resource"
+    <table schema="test" tableName="resource" domainObjectName="TbResource"
+      enableCountByExample="false" enableUpdateByExample="false"
+      enableDeleteByExample="false" enableSelectByExample="false"
+      selectByExampleQueryId="false">
+    </table>
+
+    <table schema="test" tableName="account" domainObjectName="TbAccount"
       enableCountByExample="false" enableUpdateByExample="false"
       enableDeleteByExample="false" enableSelectByExample="false"
       selectByExampleQueryId="false">
