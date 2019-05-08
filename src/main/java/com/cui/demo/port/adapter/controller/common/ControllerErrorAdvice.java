@@ -3,8 +3,11 @@ package com.cui.demo.port.adapter.controller.common;
 import com.cui.demo.exc.ErrorMessage;
 import com.cui.demo.exc.SystemException;
 import com.cui.demo.exc.UserException;
+import com.cui.demo.utils.ExceptionUtil;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -17,6 +20,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @ControllerAdvice
 public class ControllerErrorAdvice {
+
+  private final static Logger logger = LoggerFactory.getLogger(ControllerAdvice.class);
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
   @ResponseBody
@@ -47,8 +52,6 @@ public class ControllerErrorAdvice {
   @ExceptionHandler(SystemException.class)
   @ResponseBody
   public Response systemExceptionHandler(HttpServletRequest request, SystemException execption) {
-    // todo: remove print
-    execption.printStackTrace();
     return Response.builder()
         .code(execption.getCode())
         .msg(execption.getMessage())
@@ -58,7 +61,7 @@ public class ControllerErrorAdvice {
   @ExceptionHandler(Exception.class)
   @ResponseBody
   public Response exceptionHandler(HttpServletRequest request, Exception exception) {
-    exception.printStackTrace();
+    logger.error(ExceptionUtil.getStackTrace(exception));
     return Response.builder()
         .code(500)
         .msg("未知错误")

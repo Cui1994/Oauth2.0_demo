@@ -3,6 +3,7 @@ package com.cui.demo.domain.model.account;
 import static org.junit.Assert.*;
 
 import com.cui.demo.DemoApplication;
+import com.cui.demo.exc.SystemException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,7 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class AccountTest {
 
   @Test
-  public void testCreate() {
+  public void testCreate() throws SystemException {
 
     Account account1 = Account.builder()
         .id(1L)

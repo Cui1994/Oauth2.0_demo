@@ -10,7 +10,10 @@ import com.cui.demo.conf.JWTLoginPassportConf;
 import com.cui.demo.exc.ErrorMessage;
 import com.cui.demo.exc.UserException;
 import com.cui.demo.utils.DateUtil;
+import com.cui.demo.utils.ExceptionUtil;
 import java.util.Date;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
@@ -20,6 +23,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class LoginPassportService {
+
+  private final static Logger logger = LoggerFactory.getLogger(LoginPassportService);
 
   private final JWTLoginPassportConf conf;
 
@@ -44,8 +49,10 @@ public class LoginPassportService {
     catch (TokenExpiredException e) {
       throw ErrorMessage.TOKEN_EXPIRED.createUserExc();
     } catch (JWTVerificationException e) {
+      logger.error(String.format("非法 token 记录，token: %s\n error: %s", token, ExceptionUtil.getStackTrace(e)));
       throw ErrorMessage.UNEXPECTED_TOKEN.createUserExc();
     } catch (Exception e) {
+      logger.error(String.format("token校验出错, token: %s\n, error: %s", token, ExceptionUtil.getStackTrace(e)));
       throw ErrorMessage.TOKEN_CHECK_FAIL.createUserExc();
     }
   }
