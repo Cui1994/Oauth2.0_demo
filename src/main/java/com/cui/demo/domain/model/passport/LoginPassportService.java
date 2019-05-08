@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class LoginPassportService {
 
-  private final static Logger logger = LoggerFactory.getLogger(LoginPassportService);
+  private final static Logger logger = LoggerFactory.getLogger(LoginPassportService.class);
 
   private final JWTLoginPassportConf conf;
 
