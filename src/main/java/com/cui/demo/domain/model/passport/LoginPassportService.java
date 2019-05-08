@@ -3,8 +3,10 @@ package com.cui.demo.domain.model.passport;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.cui.demo.conf.JWTLoginPassportConf;
 import com.cui.demo.exc.ErrorMessage;
 import com.cui.demo.exc.UserException;
 import com.cui.demo.utils.DateUtil;
@@ -13,44 +15,38 @@ import org.springframework.stereotype.Service;
 
 /**
  * 登陆鉴权 Service，负责登录 token 相关动作，包括生成、缓存、鉴权等。
+ * todo: token 主动失效，目前考虑 redis
  * @author tao
  */
 @Service
 public class LoginPassportService {
 
-  /**
-   * jwt 相关
-   */
-  private final static String SECRET = "DEMO_JWT_SECRET";
-  private final static String SUBJECT = "login";
-  private Algorithm algorithm = Algorithm.HMAC256(SECRET.getBytes());
+  private final JWTLoginPassportConf conf;
 
-  /**
-   * token 失效时间，default: 3600s
-   */
-  private final static Integer TOKEN_EXPIRED_SECONDS = 3600;
+  LoginPassportService(JWTLoginPassportConf conf) {
+    this.conf = conf;
+  }
 
   public String createToken(Long accountId) {
-    Date expiresAt = DateUtil.getDateAfterSeconds(new Date(), TOKEN_EXPIRED_SECONDS);
-    return JWT.create().withSubject(SUBJECT).withClaim("accountId", accountId).withExpiresAt(expiresAt).sign(algorithm);
+    Algorithm algorithm = Algorithm.HMAC256(conf.getSecret().getBytes());
+    Date expiresAt = DateUtil.getDateAfterSeconds(new Date(), conf.getExpiredSeconds());
+    return JWT.create().withSubject(conf.getSubject()).withClaim("accountId", accountId).withExpiresAt(expiresAt).sign(algorithm);
   }
 
   public Long verifyToken(String token) throws UserException {
-    JWTVerifier verifier = JWT.require(algorithm).build();
+    Algorithm algorithm = Algorithm.HMAC256(conf.getSecret().getBytes());
+    JWTVerifier verifier = JWT.require(algorithm).withSubject(conf.getSubject()).build();
 
-    DecodedJWT jwt;
     try {
-      jwt = verifier.verify(token);
-    } catch (TokenExpiredException e) {
-      throw ErrorMessage.TOKEN_CHECK_FAIL.createUserExc("token 已过期");
+      DecodedJWT jwt = verifier.verify(token);
+      return jwt.getClaim("accountId").asLong();
+    }
+    catch (TokenExpiredException e) {
+      throw ErrorMessage.TOKEN_EXPIRED.createUserExc();
+    } catch (JWTVerificationException e) {
+      throw ErrorMessage.UNEXPECTED_TOKEN.createUserExc();
     } catch (Exception e) {
       throw ErrorMessage.TOKEN_CHECK_FAIL.createUserExc();
     }
-
-    if (!jwt.getSubject().equals(SUBJECT)) {
-      throw ErrorMessage.TOKEN_CHECK_FAIL.createUserExc("非法 token");
-    }
-
-    return jwt.getClaim("accountId").asLong();
   }
 }
