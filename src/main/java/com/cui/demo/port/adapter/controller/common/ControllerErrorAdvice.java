@@ -1,8 +1,13 @@
 package com.cui.demo.port.adapter.controller.common;
 
+import com.cui.demo.exc.ErrorMessage;
 import com.cui.demo.exc.SystemException;
 import com.cui.demo.exc.UserException;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -12,6 +17,23 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @ControllerAdvice
 public class ControllerErrorAdvice {
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  @ResponseBody
+  public Response argsNotValidExceptionHandler(HttpServletRequest request, MethodArgumentNotValidException exception) {
+    BindingResult bindingResult = exception.getBindingResult();
+    StringBuilder sb = new StringBuilder();
+    List<ObjectError> allErrors = bindingResult.getAllErrors();
+
+    for (ObjectError allError : allErrors) {
+      sb.append(allError.getDefaultMessage()).append(". ");
+    }
+
+    return Response.builder()
+        .code(ErrorMessage.PARAM_CAN_NOT_BE_EMPTY.getCode())
+        .msg(sb.toString())
+        .build();
+  }
 
   @ExceptionHandler(UserException.class)
   @ResponseBody

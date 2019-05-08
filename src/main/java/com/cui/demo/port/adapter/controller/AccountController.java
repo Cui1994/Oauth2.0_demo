@@ -9,6 +9,7 @@ import com.cui.demo.port.adapter.controller.dto.LoginInfoDTO;
 import com.cui.demo.port.adapter.controller.dto.AccountVerifyInfo;
 import com.cui.demo.port.adapter.controller.dto.LoginParam;
 import com.cui.demo.port.adapter.controller.dto.RegisterParam;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,8 +25,9 @@ public class AccountController {
   private AccountApplication accountApplication;
 
   @PostMapping("register")
-  public LoginInfoDTO registerAccount(@RequestBody RegisterParam registerParam)
+  public LoginInfoDTO registerAccount(@Valid @RequestBody RegisterParam registerParam)
       throws SystemException, UserException {
+    System.out.println(registerParam);
     return accountApplication.register(registerParam.getMobile(), registerParam.getName(), registerParam.getPassword());
   }
 
